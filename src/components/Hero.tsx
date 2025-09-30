@@ -103,7 +103,7 @@ const Hero = () => {
       {randomLetter && mode === "forMe" && (
         <div className="flex flex-col gap-4">
           <div className="flex items-start w-full">
-            <h1 className="text-4xl italic md:text-2xl font-medium text-gray-800">
+            <h1 className="text-lg italic md:text-2xl font-medium text-gray-800">
               Please Read The Letter
             </h1>
           </div>
