@@ -1,6 +1,6 @@
 import { supabase } from "../library/supabaseClient";
 //import { isSafeWithGemini } from "./geminiService";
-// const API_URL = import.meta.env.VITE_API_URL; // misal http://localhost:8080
+//const API_URL = import.meta.env.VITE_API_URL; // misal http://localhost:8080
 
 // export async function submitLetter(content: string) {
 //   const res = await fetch(`${API_URL}/letters`, {
@@ -11,188 +11,184 @@ import { supabase } from "../library/supabaseClient";
 //   return res.json();
 // }
 
-// export async function getRandomLetter() {
-//   const res = await fetch(`${API_URL}/letters/random`);
-//   const data = await res.json();
-//   console.log(data);
-//   console.log(data.letter);
-//   //return data.letter || data.message;
-//   if (data && data.length > 0) {
-//     const banned = [
-//       "bodoh",
-//       "goblok",
-//       "anjing",
-//       "bangsat",
-//       "tolol",
-//       "babi",
-//       "kontol",
-//       "memek",
-//       "ngentot",
-//       "jancuk",
-//       "jancuk",
-//       "perek",
-//       "pepek",
-//       "puki",
-//       "tai",
-//       "tempek",
-//       "brengsek",
-//       "sialan",
-//       "sial",
-//       "bajingan",
-//       "kampang",
-//       "kampret",
-//       "asu",
-//       "bego",
-//       "bejad",
-//       "brengsek",
-//       "gila",
-//       "goblok",
-//       "idiot",
-//       "jembut",
-//       "jelek",
-//       "kampang",
-//       "kampret",
-//       "kolot",
-//       "kudet",
-//       "lonte",
-//       "mampus",
-//       "maling",
-//       "ngaceng",
-//       "ngentot",
-//       "pejantan",
-//       "perek",
-//       "pepek",
-//       "puki",
-//       "setan",
-//       "tai",
-//       "tempek",
-//       "tolol",
-//       "toket",
-//       "brengsek",
-//       "sialan",
-//       "sial",
-//       "bajingan",
-//       "kontol",
-//       "anjeng",
-//       "babi",
-//       "bangsat",
-//       "memek",
-//       "jancuk",
-//       "jancuk",
-//       "asu",
-//       "bego",
-//       "bejad",
-//       "gila",
-//       "idiot",
-//       "jembut",
-//       "jelek",
-//       "kolot",
-//       "kudet",
-//       "lonte",
-//       "mampus",
-//       "maling",
-//       "ngaceng",
-//       "pejantan",
-//       "setan",
-//       "toket",
-//       "projek jelek",
-//       "proyek jelek",
-//       "proyek goblok",
-//       "projek goblok",
-//       "apa",
-//       "kacrut",
-//       "kampang",
-//       "kampret",
-//       "kontol",
-//       "ngentot",
-//       "perek",
-//       "pepek",
-//       "puki",
-//       "tai",
-//       "tempek",
-//       "tolol",
-//       "toket",
-//       "brengsek",
-//       "sialan",
-//       "sial",
-//       "bajingan",
-//       "anjing",
-//       "bangsat",
-//       "babi",
-//       "memek",
-//       "jancuk",
-//       "asu",
-//       "bego",
-//       "bejad",
-//       "gila",
-//       "idiot",
-//       "jembut",
-//       "jelek",
-//       "kolot",
-//       "kudet",
-//       "lonte",
-//       "mampus",
-//       "maling",
-//       "ngaceng",
-//       "pejantan",
-//       "setan",
-//       "sad",
-//     ];
+const leetMap: Record<string, string> = {
+  "0": "o",
+  "1": "i",
+  "2": "z",
+  "3": "e",
+  "4": "a",
+  "5": "s",
+  "6": "g",
+  "7": "t",
+  "8": "b",
+  "9": "g",
+};
+const banned = [
+  "bodoh",
+  "goblok",
+  "anjing",
+  "bangsat",
+  "tolol",
+  "babi",
+  "kontol",
+  "memek",
+  "ngentot",
+  "jancuk",
+  "jancuk",
+  "perek",
+  "pepek",
+  "puki",
+  "tai",
+  "tempek",
+  "brengsek",
+  "sialan",
+  "sial",
+  "bajingan",
+  "kampang",
+  "kampret",
+  "asu",
+  "bego",
+  "bejad",
+  "brengsek",
+  "gila",
+  "goblok",
+  "idiot",
+  "jembut",
+  "jelek",
+  "kampang",
+  "kampret",
+  "kolot",
+  "kudet",
+  "lonte",
+  "mampus",
+  "maling",
+  "ngaceng",
+  "ngentot",
+  "pejantan",
+  "perek",
+  "pepek",
+  "puki",
+  "setan",
+  "tai",
+  "tempek",
+  "tolol",
+  "toket",
+  "brengsek",
+  "sialan",
+  "sial",
+  "bajingan",
+  "kontol",
+  "anjeng",
+  "babi",
+  "bangsat",
+  "memek",
+  "jancuk",
+  "jancuk",
+  "asu",
+  "bego",
+  "bejad",
+  "gila",
+  "idiot",
+  "jembut",
+  "jelek",
+  "kolot",
+  "kudet",
+  "lonte",
+  "mampus",
+  "maling",
+  "ngaceng",
+  "pejantan",
+  "setan",
+  "toket",
+  "projek jelek",
+  "proyek jelek",
+  "proyek goblok",
+  "projek goblok",
+  "apa",
+  "kacrut",
+  "kampang",
+  "kampret",
+  "kontol",
+  "ngentot",
+  "perek",
+  "pepek",
+  "puki",
+  "tai",
+  "tempek",
+  "tolol",
+  "toket",
+  "brengsek",
+  "sialan",
+  "sial",
+  "bajingan",
+  "anjing",
+  "bangsat",
+  "babi",
+  "memek",
+  "jancuk",
+  "asu",
+  "bego",
+  "bejad",
+  "gila",
+  "idiot",
+  "jembut",
+  "jelek",
+  "kolot",
+  "kudet",
+  "lonte",
+  "mampus",
+  "maling",
+  "ngaceng",
+  "pejantan",
+  "setan",
+  "sad",
+  "apa",
+];
 
-//     // fungsi normalisasi kata biar variasi kayak "jjeleeekkk" tetep kena
-//     function normalizeWord(word: string) {
-//       word = word.toLowerCase();
+function normalizeWord(word: string): string {
+  let w = word.toLowerCase();
+  w = w.replace(/[0-9]/g, (d) => leetMap[d] ?? d);
+  w = w.replace(/[.,!?;:()"'`]/g, "");
+  w = w.replace(/^([a-z])\1+/, "$1");
+  w = w.replace(/([a-z])\1+/g, "$1");
+  return w;
+}
 
-//       // ganti angka jadi huruf mirip
-//       const map: Record<string, string> = {
-//         "0": "o",
-//         "1": "i",
-//         "2": "z",
-//         "3": "e",
-//         "4": "a",
-//         "5": "s",
-//         "6": "g",
-//         "7": "t",
-//         "8": "b",
-//         "9": "g",
-//       };
-//       word = word.replace(/[0123456789]/g, (d) => map[d] || d);
+function isSafe(text: string): boolean {
+  const words = text.split(/\s+/);
+  for (const word of words) {
+    const norm = normalizeWord(word);
+    if (banned.includes(norm)) {
+      return false;
+    }
+  }
+  return true;
+}
 
-//       word = word.replace(/[.,!?;:()"'`]/g, ""); // hapus tanda baca
+// export async function getRandomLetter(): Promise<string> {
+//   let tries = 0;
+//   const maxTries = 10; // biar gak infinite loop
 
-//       // hapus huruf dobel di depan
-//       word = word.replace(/^([a-z])\1+/, "$1");
+//   while (tries < maxTries) {
+//     const res = await fetch(`${import.meta.env.VITE_API_URL}/letters/random`);
+//     const data = await res.json();
 
-//       // kompres huruf berulang lebih dari 2x jadi 1
-//       word = word.replace(/([a-z])\1+/g, "$1");
+//     const content = data.letter ?? data.message ?? "";
 
-//       return word;
+//     if (isSafe(content)) {
+//       return content;
 //     }
 
-//     // filter data aman
-//     const safeData = data.filter((row: { content: string }) => {
-//       const words = row.content.toLowerCase().split(/\s+/);
-//       for (const word of words) {
-//         const norm = normalizeWord(word);
-//         if (banned.includes(norm)) {
-//           return false; // ada kata terlarang
-//         }
-//       }
-//       return true;
-//     });
-
-//     if (safeData.length > 0) {
-//       return safeData;
-//     } else {
-//       return "Belum ada pesan aman 😢";
-//     }
+//     tries++;
 //   }
 
-//   return null;
+//   return "Belum ada pesan aman 😢";
 // }
 
 //Simpan pesan ke DB
 export async function submitLetter(content: string) {
+  const safe = isSafe(content);
+  if (!safe) throw new Error("Pesan mengandung kata terlarang");
   const { error } = await supabase.from("letters").insert([{ content }]);
   if (error) throw error;
   return true;

@@ -4,7 +4,7 @@ import { submitLetter, getRandomLetter } from "../services/letterService";
 const Hero = () => {
   const [showForm, setShowForm] = useState(false);
   const [mode, setMode] = useState<null | "forMe" | "forYou">(null);
-  const [randomLetter, setRandomLetter] = useState(null);
+  const [randomLetter, setRandomLetter] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
