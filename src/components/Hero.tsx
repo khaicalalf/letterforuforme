@@ -18,6 +18,7 @@ const Hero = () => {
       setMode(null);
     } catch (error) {
       if (error instanceof Error) {
+        alert("Tolong dijaga bahasanya ya 🙏");
         console.error("Error insert:", error.message);
       } else {
         console.error("Error insert:", error);
