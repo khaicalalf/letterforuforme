@@ -143,6 +143,17 @@ const banned = [
   "setan",
   "sad",
   "apa",
+  "kacrut",
+  "kampang",
+  "jlk",
+  "jlek",
+  "kmprt",
+  "kntol",
+  "ngntot",
+  "prjk",
+  "ngtt",
+  "tai",
+  "tt",
 ];
 
 function normalizeWord(word: string): string {
