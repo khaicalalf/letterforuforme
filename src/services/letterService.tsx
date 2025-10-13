@@ -19,6 +19,12 @@ function normalizeWord(word: string): string {
   w = w.replace(/[.,!?;:()"'`]/g, "");
   w = w.replace(/^([a-z])\1+/, "$1");
   w = w.replace(/([a-z])\1+/g, "$1");
+
+  const noSpace = w.replace(/\s+/g, "");
+  if (noSpace.length <= 2) {
+    w = noSpace;
+  }
+
   return w;
 }
 
@@ -64,20 +70,31 @@ export async function submitLetter(content: string) {
 
 // Ambil 1 pesan random dari DB
 export async function getRandomLetter() {
-  const { data, error } = await supabase.from("letters").select("content");
+  const { count, error } = await supabase
+    .from("letters")
+    .select("*", { count: "exact", head: true });
+  console.log(count);
 
   if (error) throw error;
 
-  if (data && data.length > 0) {
+  if (count && count > 0) {
     let tries = 0;
     const maxTries = 10; // biar gak infinite loop
 
     while (tries < maxTries) {
       //console.log("data :", data);
-      const random = data[Math.floor(Math.random() * data.length)];
-      if (isSafe(random.content)) {
+      const random = Math.floor(Math.random() * count) + 1;
+      console.log(random);
+      const { data, error } = await supabase
+        .from("letters")
+        .select("content")
+        .eq("id", random)
+        .single();
+      if (error) throw error;
+
+      if (isSafe(data.content)) {
         //console.log("random ", random);
-        return random.content;
+        return data.content;
       }
 
       tries++;

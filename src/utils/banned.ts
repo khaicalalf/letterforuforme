@@ -129,4 +129,8 @@ export const banned = [
   "ngtt",
   "tai",
   "tt",
+  "jokowi",
+  "antek",
+  "prabowo",
+  "prab",
 ];
