@@ -99,7 +99,7 @@ export async function getRandomLetter() {
   const { count, error } = await supabase
     .from("letters")
     .select("*", { count: "exact", head: true });
-  console.log(count);
+  //console.log(count);
 
   if (error) throw error;
 
@@ -110,7 +110,7 @@ export async function getRandomLetter() {
     while (tries < maxTries) {
       const random = Math.floor(Math.random() * count) + 1;
       //const random = 6;
-      console.log(random);
+      //console.log(random);
       const { data, error } = await supabase
         .from("letters")
         .select("content")
