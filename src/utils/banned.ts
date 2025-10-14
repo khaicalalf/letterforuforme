@@ -135,4 +135,6 @@ export const banned = [
   "prab",
   "bahlil",
   "bahlul",
+  "fufufafa",
+  "fufu",
 ];
