@@ -2,6 +2,8 @@ import { supabase } from "../library/supabaseClient";
 //import { isSafeWithGemini } from "./geminiService";
 import { leetMap } from "../utils/leetMap";
 import { banned } from "../utils/banned";
+import { checkBadwordGemini } from "../library/gemini";
+//import OpenAI from "openai";
 //const API_URL = import.meta.env.VITE_API_URL; // misal http://localhost:8080
 
 // export async function submitLetter(content: string) {
@@ -11,6 +13,28 @@ import { banned } from "../utils/banned";
 //     body: JSON.stringify({ content }),
 //   });
 //   return res.json();
+// }
+// const client = new OpenAI({
+//   apiKey: import.meta.env.VITE_OPEN_API,
+//   dangerouslyAllowBrowser: true,
+// });
+
+// async function checkBadwordWithOpenAI(text: string): Promise<boolean> {
+//   const completion = await client.chat.completions.create({
+//     model: "gpt-4o-mini",
+//     temperature: 0,
+//     messages: [
+//       {
+//         role: "system",
+//         content:
+//           "Kamu adalah filter teks. Jika input mengandung kata kasar, cabul, diskriminatif, politis atau ofensif, jawab 'true'. Jika tidak, jawab 'false'. Jawab hanya true atau false.",
+//       },
+//       { role: "user", content: text },
+//     ],
+//   });
+
+//   const answer = completion.choices[0].message.content?.trim().toLowerCase();
+//   return answer === "true";
 // }
 
 function normalizeWord(word: string): string {
@@ -62,7 +86,9 @@ function isSafe(text: string): boolean {
 //Simpan pesan ke DB
 export async function submitLetter(content: string) {
   const safe = isSafe(content);
-  if (!safe) throw new Error("Pesan mengandung kata terlarang");
+  if (safe) throw new Error("Pesan mengandung kata terlarang");
+  const badwords = await checkBadwordGemini(content);
+  if (badwords) throw new Error("Pesan mengandung kata terlarang");
   const { error } = await supabase.from("letters").insert([{ content }]);
   if (error) throw error;
   return true;
@@ -80,10 +106,10 @@ export async function getRandomLetter() {
   if (count && count > 0) {
     let tries = 0;
     const maxTries = 10; // biar gak infinite loop
-
+    let candidate: string | null = null;
     while (tries < maxTries) {
-      //console.log("data :", data);
       const random = Math.floor(Math.random() * count) + 1;
+      //const random = 6;
       console.log(random);
       const { data, error } = await supabase
         .from("letters")
@@ -92,12 +118,26 @@ export async function getRandomLetter() {
         .single();
       if (error) throw error;
 
-      if (isSafe(data.content)) {
-        //console.log("random ", random);
-        return data.content;
+      const content = data.content;
+
+      // 🔸 cek pakai filter lokal dulu
+      if (isSafe(content)) {
+        candidate = content; // simpan kandidat aman
+        break; // langsung keluar loop
       }
 
       tries++;
+    }
+
+    // 🧠 kalau gak nemu kandidat
+    if (!candidate) {
+      return "Belum ada pesan aman 😢";
+    }
+
+    // ⚡ kalau ada kandidat → cek Gemini cuma sekali
+    const flagged = await checkBadwordGemini(candidate);
+    if (!flagged) {
+      return candidate;
     }
 
     return "Belum ada pesan aman 😢";
@@ -116,5 +156,5 @@ export async function getRandomLetter() {
   //   const random = safeData[Math.floor(Math.random() * safeData.length)];
   //   return random.content;
   // }
-  // return "Belum ada pesan aman di database 😢";
+  return "Belum ada pesan aman di database 😢";
 }

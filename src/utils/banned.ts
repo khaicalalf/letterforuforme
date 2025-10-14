@@ -133,4 +133,6 @@ export const banned = [
   "antek",
   "prabowo",
   "prab",
+  "bahlil",
+  "bahlul",
 ];
