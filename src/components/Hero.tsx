@@ -5,12 +5,15 @@ const Hero = () => {
   const [showForm, setShowForm] = useState(false);
   const [mode, setMode] = useState<null | "forMe" | "forYou">(null);
   const [randomLetter, setRandomLetter] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
     const value = (form.elements.namedItem("message") as HTMLTextAreaElement)
       .value;
+
+    setLoading(true);
     try {
       await submitLetter(value);
       alert("Pesan berhasil dikirim! 🙌");
@@ -27,6 +30,7 @@ const Hero = () => {
   };
 
   const handleForMe = async () => {
+    setLoading(true);
     try {
       const letter = await getRandomLetter();
       setRandomLetter(letter || "Belum ada pesan di database 😢");
@@ -59,6 +63,7 @@ const Hero = () => {
             </button>
             <button
               onClick={handleForMe}
+              disabled={loading}
               className="px-6 py-3 rounded-xl border-2 border-gray-600 text-gray-600 font-semibold hover:bg-gray-200 hover:text-gray-800 transition duration-300"
             >
               For Me
@@ -82,6 +87,7 @@ const Hero = () => {
             <div className="flex gap-4 justify-center">
               <button
                 type="submit"
+                disabled={loading}
                 className="px-6 py-3 rounded-xl bg-gray-600 text-white font-semibold shadow-md hover:bg-gray-800 transition duration-300"
               >
                 Kirimkan ✈️
@@ -91,6 +97,7 @@ const Hero = () => {
                 onClick={() => {
                   setShowForm(false);
                   setMode(null);
+                  setLoading(false);
                 }}
                 className="px-6 py-3 rounded-xl border-2 border-gray-600 text-gray-600 font-semibold hover:bg-gray-200 hover:text-gray-800 transition duration-300"
               >
@@ -113,6 +120,7 @@ const Hero = () => {
             onClick={() => {
               setRandomLetter(null);
               setMode(null);
+              setLoading(false);
             }}
             className="px-6 py-3 rounded-xl border-2 border-gray-600 text-gray-600 font-semibold hover:bg-gray-200 hover:text-gray-800 transition duration-300"
           >
