@@ -13,7 +13,6 @@ const Hero = () => {
     const value = (form.elements.namedItem("message") as HTMLTextAreaElement)
       .value;
 
-    setLoading(true);
     try {
       await submitLetter(value);
       alert("Pesan berhasil dikirim! 🙌");
@@ -88,7 +87,6 @@ const Hero = () => {
             <div className="flex gap-4 justify-center">
               <button
                 type="submit"
-                disabled={loading}
                 className="px-6 py-3 rounded-xl bg-gray-600 text-white font-semibold shadow-md hover:bg-gray-800 transition duration-300"
               >
                 Kirimkan ✈️

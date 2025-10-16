@@ -81,7 +81,7 @@ function isSafe(text: string): boolean {
 //Simpan pesan ke DB
 export async function submitLetter(content: string) {
   const safe = isSafe(content);
-  if (safe) throw new Error("Pesan mengandung kata terlarang");
+  if (!safe) throw new Error("Pesan mengandung kata terlarang");
   const badwords = await checkBadwordGemini(content);
   if (badwords) throw new Error("Pesan mengandung kata terlarang");
   const { error } = await supabase.from("letters").insert([{ content }]);
