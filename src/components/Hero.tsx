@@ -22,6 +22,7 @@ const Hero = () => {
     } catch (error) {
       if (error instanceof Error) {
         alert("Tolong dijaga bahasanya ya 🙏");
+        window.location.reload();
         console.error("Error insert:", error.message);
       } else {
         console.error("Error insert:", error);
