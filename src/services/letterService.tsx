@@ -44,11 +44,6 @@ function normalizeWord(word: string): string {
   w = w.replace(/^([a-z])\1+/, "$1");
   w = w.replace(/([a-z])\1+/g, "$1");
 
-  const noSpace = w.replace(/\s+/g, "");
-  if (noSpace.length <= 2) {
-    w = noSpace;
-  }
-
   return w;
 }
 
@@ -134,7 +129,7 @@ export async function getRandomLetter() {
       return "Belum ada pesan aman 😢";
     }
 
-    // ⚡ kalau ada kandidat → cek Gemini cuma sekali
+    // ⚡ kalau ada cek Gemini
     const flagged = await checkBadwordGemini(candidate);
     if (!flagged) {
       return candidate;
